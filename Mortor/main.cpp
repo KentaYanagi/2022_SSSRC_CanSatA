@@ -1,4 +1,4 @@
-## Motor単体試験
+// Motor単体試験
 #include "mbed.h"
 DigitalOut STBY(D13);
 DigitalOut AIN1(A5);
