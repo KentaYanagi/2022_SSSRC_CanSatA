@@ -1,13 +1,17 @@
-#include "mbed.h"
-​
-Serial pc(USBTX, USBRX);
+#include "mbed.h" //mbed Standard Library
+#include "getGPS.h" //GPS Library
+//#include "math.h" //Math Library
+
+Serial pc(USBTX, USBRX); //tx, rx
+Serial pc(SERIAL_TX, SERIAL_RX); //試験用
 DigitalIn FlightPin(D12);
 DigitalOut Nichrome(D2);
 PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
 DigitalOut STBY(D11);
 PwmOut servo(D6);
-​
+GPS gps(D1, D0); //GPS object
+
 void driveMoter(float speedA){
     float outputA = abs(speedA);
     if(speedA > 0){
@@ -21,13 +25,12 @@ void driveMoter(float speedA){
         pinARin=0;
     }
 }
-​
-​
+
 int main(){
     //フライトピン
  // pc.printf("フライトピンの状態を表示します\r\n");
  //   pc.printf("OFF\r\n");
-​
+
     while(1){
         if(FlightPin.read() == 1){
             pc.printf("ON\r\n");
@@ -35,7 +38,7 @@ int main(){
         }
     }
         wait(60);
-​
+
     pc.printf("start\r\n");
     Nichrome = 1;
     //wait(5);
@@ -45,7 +48,7 @@ int main(){
     }
     Nichrome = 0;
     pc.printf("end\r\n");
-​
+
 /*走行，測距，GPS
 ​
 ​
@@ -53,7 +56,7 @@ int main(){
 ​
 ​
 */
-​
+
 //採取
     STBY = 1;                               //モータドライバON
     servo.period_ms(20);                    //採取機構回転装置回転
@@ -72,7 +75,7 @@ int main(){
         wait(3);
         }
     STBY = 0;
-​
+
 /*走行，測距，GPS
 ​
 ​
@@ -80,7 +83,7 @@ int main(){
 ​
 ​
 */
-​
+
 STBY = 1;                               //モータドライバON
     servo.period_ms(20);                    //採取機構回転装置回転
     int a;
@@ -98,7 +101,7 @@ STBY = 1;                               //モータドライバON
         wait(3);
         }
     STBY = 0;
-​
+
 /*走行，測距，GPS
 ​
 ​
@@ -106,7 +109,7 @@ STBY = 1;                               //モータドライバON
 ​
 ​
 */
-​
+
 STBY = 1;                               //モータドライバON
     servo.period_ms(20);                    //採取機構回転装置回転
     int a;
@@ -124,7 +127,7 @@ STBY = 1;                               //モータドライバON
         wait(3);
         }
     STBY = 0;
-​
+
 /*走行，測距，GPS
 ​
 ​
