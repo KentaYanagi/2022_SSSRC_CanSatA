@@ -1,5 +1,5 @@
 #include "mbed.h"
-​
+
 Serial pc(USBTX, USBRX);
 DigitalIn FlightPin(D12);
 DigitalOut Nichrome(D2);
@@ -13,7 +13,7 @@ int main(){
         }
     }
   //  wait(60);
-​
+
     pc.printf("start\r\n");
     Nichrome = 1;
     for(int i=1;i<10;i++){
