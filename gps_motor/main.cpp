@@ -1,6 +1,6 @@
 /*このコードの使い方
 1．まずライン75と441にコメントアウト記号(このコメントに使っているもの)を記入する
-2．CanSatが20回転する時間(小数点第3位までできれば)をライン24のt20に代入する
+2．CanSatが15回転する時間(小数点第3位までできれば)をライン24のt15に代入する
 3．1．でのコメントアウト記号を外す
 4．ライン63と73にコメントアウト記号(このコメントに使っているもの)を記入する
 5．さあ実験スタート
@@ -21,7 +21,7 @@
 //Sleep関数 milli second
 //#include "windows.h" //これはまず使えない
 //この下代入してね！
-int t20= 6000 ;
+int t15= 29180 ;
 double gg1=135.508111;
 double gg2=34.545111;
 
@@ -82,23 +82,25 @@ int main () {
 
         if (gps.getgps()){  //GPSモジュールの機能確認
         motorStop();
-        pc.printf("Started getting GPS_first\nWaiting for 5min\n");
+        pc.printf("Started getting GPS_first\nWaiting for 5min\r\n");
         wait_ms(5000);
         }
         else {
-        pc.printf("Problem01\n");
+        pc.printf("Problem01\r\n");
         exit(0);
         }
             
         if (gps.getgps()){   //落下地点のGPS取得
         g11=gps.latitude;
         g12=gps.longitude;
-        pc.printf("Complete getting GPS\n");
+        pc.printf("Complete getting GPS\r\n");
+        pc.printf("g11=%f\r\n",g11);
+        pc.printf("g12=%f\r\n",g12);
         }
         else {
         
         
-        pc.printf("Problem02\n");
+        pc.printf("Problem02\r\n");
         exit(0);
         }
         
@@ -110,22 +112,31 @@ int main () {
         if (gps.getgps()) {  //方向認知のためのGPS取得
         g21=gps.latitude;
         g22=gps.longitude;
-        pc.printf("Complete getting GPS_turn\n");
+        pc.printf("Complete getting GPS_turn\r\n");
+        pc.printf("g21=%f\r\n",g21);
+        pc.printf("g22=%f\r\n",g22);
         }
         else {
         
-        pc.printf("Problem03\n");
+        pc.printf("Problem03\r\n");
         exit(0);
         }
         
                         //方向検知のためのベクトル検知
         sp11=g21-g11; //sp11=self_posture_11 
+        pc.printf("sp11=%f\r\n",sp11);
         sp12=g22-g12;
+        pc.printf("sp12=%f\r\n",sp12);
         l1=sqrt(pow(sp11, 2.0)+pow(sp12, 2.0));
+        pc.printf("l1=%f\r\n",l1);
         cos1=sp11/l1;
+        pc.printf("cos1=%f\r\n",cos1);
         sin1=sp12/l1;
+        pc.printf("sin1=%f\r\n",sin1);
         ras1 = asin(sin1);
+        pc.printf("ras1=%f\r\n",ras1);
         rac1 = acos(cos1);
+        pc.printf("rac1=%f\r\n",rac1);
         if(sin1>=0 && cos1>=0){
             ra=ras1;
         }
@@ -135,12 +146,16 @@ int main () {
         if (sin1<0){
             ra=2*3.141593-rac1;
             }
+        
+        pc.printf("ra=%f\r\n",ra);
 
         a_ra(ra);
+
+
         
         a1=a;
         
-        
+        pc.printf("a1=%f\r\n",a1);
         
         motorForward();   //移動30s
         wait_ms(30000);
@@ -151,20 +166,29 @@ int main () {
         g31=gps.latitude;
         g32=gps.longitude;
         pc.printf("Complete getting GPS_recogError\n");
+        pc.printf("g31=%f\r\n",g31);
+        pc.printf("g32=%f\r\n",g32);
         }
         else {
-        pc.printf("Problem04\n");
+        pc.printf("Problem04\r\n");
         exit(0);
         }
         
                             //誤差検知のためのベクトル検出
         sp21=g31-g21; //sp11=self_posture_11
+        pc.printf("sp21=%f\r\n",sp21);
         sp22=g32-g22;
+        pc.printf("sp22=%f\r\n",sp22);
         l2=sqrt(pow(sp21, 2.0)+pow(sp22, 2.0));
+        pc.printf("l2=%f\r\n",l2);
         cos2=sp21/l2;
+        pc.printf("cos2=%f\r\n",cos2);
         sin2=sp22/l2;
+        pc.printf("sin2=%f\r\n",sin2);
         ras2 = asin(sin2);
+        pc.printf("ras2=%f\r\n",ras2);
         rac2 = acos(cos2);
+        pc.printf("rac2=%f\r\n",rac2);
         if(sin2>=0 && cos2>=0){
             ra=ras2;
         }
@@ -178,20 +202,29 @@ int main () {
         a_ra(ra);
         
         a2=a;
+        pc.printf("a2=%f\r\n",a2);
 
         ea12=a2-a1;
+        pc.printf("ea12=%f\r\n",ea12);
 
         r12=l2/l1;      //土壌地質変化
-        pc.printf("r12=%f",r12);
+        pc.printf("r12=%f\r\n",r12);
 
         sg31=gg1-g31;           //Goalまでのベクトル検出
+        pc.printf("sg31=%f\r\n",sg31);
         sg32=gg2-g32;
+        pc.printf("sg32=%f\r\n",sg32);
 
         l3=sqrt(pow(sp31, 2.0)+pow(sp32, 2.0)); //Goalまでの距離
+        pc.printf("l3=%f\r\n",l3);
         cos3=sg31/l3;
+        pc.printf("cos3=%f\r\n",cos3);
         sin3=sg32/l3;
+        pc.printf("sin3=%f\r\n",sin3);
         ras3 = asin(sin3);
+        pc.printf("ras3=%f\r\n",ras3);
         rac3 = acos(cos3);
+        pc.printf("rac3=%f\r\n",rac3);
         if(sin3>=0 && cos3>=0){
             ra=ras3;
         }
@@ -205,17 +238,21 @@ int main () {
         a_ra(ra);
 
         a3=a;
+        pc.printf("a3=%f\r\n",a3);
 
         ca32=a3-a2+ea12;    //Goalまでの角度
+        pc.printf("ca32=%f\r\n",ca32);
 
         tt3=ca32/360/20*t20; //Goal方向までの回転時間
+        pc.printf("tt3=%f\r\n",tt3);
 
         motorTurn();        //Goalまでの角度まで回転
         wait_ms(tt3);
         motorStop();
-
+        wait_ms(5000);
 
         t3=l3/l2*30000;         //Goalまでの時間
+        pc.printf("t3=%f\r\n",t3);
 
         motorForward();   //移動t3
         wait_ms(t3);
@@ -226,16 +263,18 @@ int main () {
         g41=gps.latitude;
         g42=gps.longitude;
         pc.printf("Complete getting GPS_goal1\n");
+        pc.printf("g41=%f\r\n",g41);
+        pc.printf("g42=%f\r\n",g42);
         }
         else {
-        pc.printf("Problem05\n");
+        pc.printf("Problem05\r\n");
         exit(0);
         }
         
         //位置情報検証 地球の赤道半径を6378.137kmとする 1度=111.3195km 1m=0.00000899322度
         //位置情報検証 地球の極半径を6356.752kmとする 1度=110.574km 1m=0.00000902956度  0.00000003634度の誤差
 
-        if(g41>gg1-0.00000899322 && g41<gg1+0.00000899322 && g42>gg2-0.00000902956 && g42<gg2+0.00000902956){
+        if(g41>gg1-0.0000899322 && g41<gg1+0.0000899322 && g42>gg2-0.0000902956 && g42<gg2+0.0000902956){
             pc.printf("Reached Goal\n");
             exit(0);
         }
@@ -245,12 +284,19 @@ int main () {
 
 
         sp41=g41-g31;   //誤差検出のためのベクトル検出
+        pc.printf("sp41=%f\r\n",sp41);
         sp42=g42-g32;
-        l3=sqrt(pow(sp41, 2.0)+pow(sp42, 2.0));;
+        pc.printf("sp42=%f\r\n",sp42);
+        l3=sqrt(pow(sp41, 2.0)+pow(sp42, 2.0));
+        pc.printf("l3=%f\r\n",l3);
         cos3=sp31/l3;
+        pc.printf("cos3=%f\r\n",cos3);
         sin3=sp32/l3;
+        pc.printf("sin3=%f\r\n",sin3);
         ras3 = asin(sin3);
+        pc.printf("ras3=%f\r\n",ras3);
         rac3 = acos(cos3);
+        pc.printf("ras3=%f\r\n",ras3);
         if(sin3>=0 && cos3>=0){
             ra=ras3;
         }
@@ -264,20 +310,30 @@ int main () {
         a_ra(ra);
         
         a3=a;
+        pc.printf("a3=%f\r\n",a3);
 
         ea23=a3-a2;
+        pc.printf("ea23=%f\r\n",ea23);
 
         r23=(l3/t3)/(l2/30);      //土壌地質変化
-        pc.printf("r23=%f",r23);
+        pc.printf("r23=%f\r\n",r23);
+
 
         sg41=gg1-g41;           //Goalまでのベクトル検出
+        pc.printf("sg41=%f\r\n",sg41);
         sg42=gg2-g42;
+        pc.printf("sg42=%f\r\n",sg42);
 
         l4=sqrt(pow(sp41, 2.0)+pow(sp42, 2.0)); //Goalまでの距離
+        pc.printf("l4=%f\r\n",l4);
         cos4=sg41/l4;
+        pc.printf("cos4=%f\r\n",cos4);
         sin4=sg42/l4;
+        pc.printf("sin4=%f\r\n",sin4);
         ras4 = asin(sin4);
+        pc.printf("ras4=%f\r\n",ras4);
         rac4 = acos(cos4);
+        pc.printf("rac4=%f\r\n",rac4);
         if(sin4>=0 && cos4>=0){
             ra=ras4;
         }
@@ -291,17 +347,22 @@ int main () {
         a_ra(ra);
 
         a4=a;
+        pc.printf("a4=%f\r\n",a4);
 
         ca43=a4-a3+ea23;    //Goalまでの角度
+        pc.printf("ca43=%f\r\n",ca43);
 
         tt4=ca32/360/20*t20; //Goal方向までの回転時間
+        pc.printf("tt4=%f\r\n",tt4);
 
         motorTurn();        //Goalまでの角度まで回転
         wait_ms(tt4);
         motorStop();
+        wait_ms(5000);
 
 
         t4=l4/l3*t3;         //Goalまでの時間
+        pc.printf("t4=%f\r\n",t4);
 
         motorForward();   //移動t3
         wait_ms(t4);
@@ -311,17 +372,19 @@ int main () {
         if(gps.getgps()) {   //予想Goal地点1でのGPS取得
         g51=gps.latitude;
         g52=gps.longitude;
-        pc.printf("Complete getting GPS_goal2\n");
+        pc.printf("Complete getting GPS_goal2\r\n");
+        pc.printf("g51=%f\r\n",g51);
+        pc.printf("g52=%f\r\n",g52);
         }
         else {
-        pc.printf("Problem06\n");
+        pc.printf("Problem06\r\n");
         exit(0);
         }
         
         //位置情報検証 地球の赤道半径を6378.137kmとする 1度=111.3195km 1m=0.00000899322度
         //位置情報検証 地球の極半径を6356.752kmとする 1度=110.574km 1m=0.00000902956度  0.00000003634度の誤差
 
-        if(g51>gg1-0.00000899322 && g51<gg1+0.00000899322 && g52>gg2-0.00000902956 && g52<gg2+0.00000902956){
+        if(g51>gg1-0.0000899322 && g51<gg1+0.0000899322 && g52>gg2-0.0000902956 && g52<gg2+0.0000902956){
             pc.printf("Complete moving to Goal2\n");
             exit(0);
         }
@@ -330,12 +393,19 @@ int main () {
         }
         
         sp41=g51-g41;   //誤差検出のためのベクトル検出
+        pc.printf("sp41=%f\r\n",sp41);
         sp42=g52-g42;
+        pc.printf("sp42=%f\r\n",sp42);
         l4=sqrt(pow(sp41, 2.0)+pow(sp42, 2.0));
+        pc.printf("l4=%f\r\n",l4);
         cos4=sp41/l4;
+        pc.printf("cos4=%f\r\n",cos4);
         sin4=sp42/l4;
+        pc.printf("sin4=%f\r\n",sin4);
         ras4 = asin(sin4);
+        pc.printf("ras4=%f\r\n",ras4);
         rac4 = acos(cos4);
+        pc.printf("ras4=%f\r\n",ras4);
         if(sin4>=0 && cos4>=0){
             ra=ras4;
         }
@@ -349,20 +419,29 @@ int main () {
         a_ra(ra);
         
         a4=a;
+        pc.printf("a4=%f\r\n",a4);
 
         ea34=a4-a3;
+        pc.printf("ea34=%f\r\n",ea34);
 
         r34=(l4/t4)/(l3/t3);      //土壌地質変化
-        pc.printf("r34=%f",r34);
-
+        pc.printf("r34=%f\r\n",r34);
+    
         sg51=gg1-g51;           //Goalまでのベクトル検出
+        pc.printf("sg51=%f\r\n",sg51);
         sg52=gg2-g52;
+        pc.printf("sg52=%f\r\n",sg52);
 
         l5=sqrt(pow(sp51, 2.0)+pow(sp52, 2.0));//Goalまでの距離
+        pc.printf("l5=%f\r\n",l5);
         cos5=sg51/l5;
+        pc.printf("cos5=%f\r\n",cos5);
         sin5=sg52/l5;
+        pc.printf("sin5=%f\r\n",sin5);
         ras5 = asin(sin5);
+        pc.printf("ras5=%f\r\n",ras5);
         rac5 = acos(cos5);
+        pc.printf("rac5=%f\r\n",rac5);
         if(sin5>=0 && cos5>=0){
             ra=ras5;
         }
@@ -376,17 +455,22 @@ int main () {
         a_ra(ra);
 
         a5=a;
+        pc.printf("a5=%f\r\n",a5);
 
         ca54=a5-a4+ea34;    //Goalまでの角度
+        pc.printf("ca54=%f\r\n",ca54);
 
         tt5=ca43/360/20*t20; //Goal方向までの回転時間
+        pc.printf("tt5=%f\r\n",tt5);
 
         motorTurn();        //Goalまでの角度まで回転
         wait_ms(tt5);
         motorStop();
+        wait_ms(5000);
 
 
         t5=l5/l4*t4;         //Goalまでの時間
+        pc.printf("t5=%f\r\n",t5);
 
         motorForward();   //移動t3
         wait_ms(t5);
@@ -397,16 +481,18 @@ int main () {
         g61=gps.latitude;
         g62=gps.longitude;
         pc.printf("Complete getting GPS_goal3\n");
+        pc.printf("g61=%f\r\n",g61);
+        pc.printf("g62=%f\r\n",g62);
         }
         else {
-        pc.printf("Problem07\n");
+        pc.printf("Problem07\r\n");
         exit(0);
         }
         
         //位置情報検証 地球の赤道半径を6378.137kmとする 1度=111.3195km 1m=0.00000899322度
         //位置情報検証 地球の極半径を6356.752kmとする 1度=110.574km 1m=0.00000902956度  0.00000003634度の誤差
 
-        if(g61>gg1-0.00000899322 && g61<gg1+0.00000899322 && g62>gg2-0.00000902956 && g62<gg2+0.00000902956){
+        if(g61>gg1-0.0000899322 && g61<gg1+0.0000899322 && g62>gg2-0.0000902956 && g62<gg2+0.0000902956){
             pc.printf("Reached Goal3\n");
             exit(0);
         }

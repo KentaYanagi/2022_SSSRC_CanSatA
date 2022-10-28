@@ -2,9 +2,9 @@
 #include "getGPS.h" //GPS Library
 //#include "math.h" //Math Library
 
-Serial pc(USBTX, USBRX); //tx, rx
-Serial pc(SERIAL_TX, SERIAL_RX); //試験用
-DigitalIn FlightPin(D12);
+Serial pc(USBTX, USBRX); //tx, rx Flight Pin
+Serial pc(SERIAL_TX, SERIAL_RX); //試験用 GPS
+DigitalIn FlightPin(D12); 
 DigitalOut Nichrome(D2);
 PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
