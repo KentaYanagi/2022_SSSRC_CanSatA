@@ -547,7 +547,7 @@ int main()
     double time = 41.67
     // 35/2/(21*0.3/15)=41.666666666667
     
-    /* 1秒ごとに現在地を取得してターミナル出力 */
+    // 1秒ごとに現在地を取得してターミナル出力
     /*while(1) {
         if(gps.getgps()) //現在地取得
             pc.printf("(%lf, %lf)\r\n", gps.latitude, gps.longitude);//緯度と経度を出力
