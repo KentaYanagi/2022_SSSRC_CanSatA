@@ -75,85 +75,82 @@ int main () {
 
 
 int main () {
-    
-    
-
     STBY = 1;
+    motorStop();
 
+    pc.printf("GPS_first start\r\n");
+    while(1) {
         if (gps.getgps()){  //GPSモジュールの機能確認
-        motorStop();
-        pc.printf("Started getting GPS_first\nWaiting for 5min\r\n");
-        wait_ms(5000);
+            pc.printf("GPS_first OK\r\n");
+            break;
         }
-        else {
-        pc.printf("Problem01\r\n");
-        exit(0);
-        }
-            
+    }
+    
+    pc.printf("Got GPS_first\r\nWaiting for 5min\r\n");
+    wait_ms(5000);
+
+    while(1){       
         if (gps.getgps()){   //落下地点のGPS取得
-        g11=gps.latitude;
-        g12=gps.longitude;
-        pc.printf("Complete getting GPS\r\n");
-        pc.printf("g11=%f\r\n",g11);
-        pc.printf("g12=%f\r\n",g12);
+            g11=gps.latitude;
+            g12=gps.longitude;
+            pc.printf("Complete getting GPS\r\n");
+            pc.printf("g11=%f\r\n",g11);
+            pc.printf("g12=%f\r\n",g12);
+            break;
         }
-        else {
-        
-        
-        pc.printf("Problem02\r\n");
-        exit(0);
-        }
-        
-        motorForward();      //移動30s
-        wait_ms(30000);
-        motorStop();
-        wait_ms(5000);
-        
+    }
+
+    motorForward();      //移動30s
+    pc.printf("Moving 30s\r\n");
+    wait_ms(30000);
+    motorStop();
+    pc.printf("Stop 5s\r\n");
+    wait_ms(5000);
+
+    while(1){  
         if (gps.getgps()) {  //方向認知のためのGPS取得
-        g21=gps.latitude;
-        g22=gps.longitude;
-        pc.printf("Complete getting GPS_turn\r\n");
-        pc.printf("g21=%f\r\n",g21);
-        pc.printf("g22=%f\r\n",g22);
+            g21=gps.latitude;
+            g22=gps.longitude;
+            pc.printf("Complete getting GPS_turn\r\n");
+            pc.printf("g21=%f\r\n",g21);
+            pc.printf("g22=%f\r\n",g22);
+            break;
         }
-        else {
+    }
         
-        pc.printf("Problem03\r\n");
-        exit(0);
-        }
         
                         //方向検知のためのベクトル検知
-        sp11=g21-g11; //sp11=self_posture_11 
-        pc.printf("sp11=%f\r\n",sp11);
-        sp12=g22-g12;
-        pc.printf("sp12=%f\r\n",sp12);
-        l1=sqrt(pow(sp11, 2.0)+pow(sp12, 2.0));
-        pc.printf("l1=%f\r\n",l1);
-        cos1=sp11/l1;
-        pc.printf("cos1=%f\r\n",cos1);
-        sin1=sp12/l1;
-        pc.printf("sin1=%f\r\n",sin1);
-        ras1 = asin(sin1);
-        pc.printf("ras1=%f\r\n",ras1);
-        rac1 = acos(cos1);
-        pc.printf("rac1=%f\r\n",rac1);
-        if(sin1>=0 && cos1>=0){
-            ra=ras1;
-        }
-        if (sin1>=0 && cos1<0){
-            ra=rac1;
-            }
-        if (sin1<0){
-            ra=2*3.141593-rac1;
-            }
+    sp11=g21-g11; //sp11=self_posture_11 
+    pc.printf("sp11=%f\r\n",sp11);
+    sp12=g22-g12;
+    pc.printf("sp12=%f\r\n",sp12);
+    l1=sqrt(pow(sp11, 2.0)+pow(sp12, 2.0));
+    pc.printf("l1=%f\r\n",l1);
+    cos1=sp11/l1;
+    pc.printf("cos1=%f\r\n",cos1);
+    sin1=sp12/l1;
+    pc.printf("sin1=%f\r\n",sin1);
+    ras1 = asin(sin1);
+    pc.printf("ras1=%f\r\n",ras1);
+    rac1 = acos(cos1);
+    pc.printf("rac1=%f\r\n",rac1);
+
+    if(sin1>=0 && cos1>=0){
+        ra=ras1;
+    }
         
-        pc.printf("ra=%f\r\n",ra);
-
-        a_ra(ra);
-
-
+    if (sin1>=0 && cos1<0){
+        ra=rac1;
+    }
         
-        a1=a;
+    if (sin1<0){
+        ra=2*3.141593-rac1;
+    }
+        
+    pc.printf("ra=%f\r\n",ra);
+
+    a_ra(ra);
+    a1=a;
         
         pc.printf("a1=%f\r\n",a1);
         
