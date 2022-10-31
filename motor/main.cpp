@@ -18,13 +18,7 @@ int main() {
     STBY = 1;
     while(1) {
         motorForward();
-        wait(50);
-        motorStop();
-        wait(5);
-        motorTurnR();
-        wait(10);
-        motorStop();
-        wait(5);
+        wait(500000);
     }
 }
 void motorForward(void) {
