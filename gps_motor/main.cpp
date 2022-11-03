@@ -20,10 +20,13 @@
 //#include "stdlib.h"
 //Sleep関数 milli second
 //#include "windows.h" //これはまず使えない
+
 //この下代入してね！
 int t15= 29180 ;
 double gg1=135.508111;
 double gg2=34.545111;
+double leftwidth=0.5;
+double rightwidth=0.5;
 
 //only GPS
 Serial pc(SERIAL_TX, SERIAL_RX); //試験用
@@ -32,10 +35,10 @@ GPS gps(D1, D0);
 
 //only Motor
 DigitalOut STBY(D13);
-DigitalOut AIN1(A5);
-DigitalOut AIN2(A6);
-DigitalOut BIN1(A2);
-DigitalOut BIN2(A1);
+PwmOut AIN1(A5);
+PwmOut AIN2(A6);
+PwmOut BIN1(A2);
+PwmOut BIN2(A1);
 
 void motorForward(void);
 void motorStop(void);
@@ -514,18 +517,18 @@ int main () {
 
 void motorForward() {
     motorStop();
-    AIN1 = 1;
+    AIN1 = leftwidth;
     AIN2 = 0;
-    BIN1 = 1;
+    BIN1 = rightwidth;
     BIN2 = 0;
 }
 
 void motorTurn() {
     motorStop();
-    AIN1 = 1;
+    AIN1 = leftwidth;
     AIN2 = 0;
     BIN1 = 0;
-    BIN2 = 1;
+    BIN2 = rightwidth;
 }
 void motorStop() {
     AIN1 = 0;
