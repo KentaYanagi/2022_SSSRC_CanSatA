@@ -61,7 +61,9 @@ double ra, a;
 double a1,a2,a3,a4,a5,a6,a7,a8,a9;
 double ea12, ea23, ea34, ea45, ea56, ea67, ea78, ea89;
 double ca32,ca43,ca54,ca65,ca67,ca78,ca89;
+double td3, td4, td5, td6, td7, td8, td9;
 int t3,t4,t5,t6,t7,t8,t9;
+double ttd3, ttd4, ttd5, ttd6, ttd7, ttd8, ttd9;
 int tt3,tt4,tt5,tt6,tt7,tt8,tt9;
 double r12,r23,r34;
 /*
@@ -243,7 +245,8 @@ int main () {
     ca32=a3-a2+ea12;    //Goalまでの角度
     pc.printf("ca32=%f\r\n",ca32);
 
-    tt3=ca32/360/15*t15; //Goal方向までの回転時間
+    ttd3=ca32/360/15*t15; //Goal方向までの回転時間
+    tt3=(int)ttd3;
     pc.printf("tt3=%f\r\n",tt3);
 
     motorTurn();        //Goalまでの角度まで回転
@@ -253,7 +256,9 @@ int main () {
     pc.printf("Stop\r\n");
     wait_ms(5000);
 
-    t3=l3/l2*30000;         //Goalまでの時間
+    td3=l3/l2*30000;         //Goalまでの時間
+    t3=(int)td3;
+
     pc.printf("t3=%f\r\n",t3);
 
     motorForward();   //移動t3
@@ -356,7 +361,8 @@ int main () {
     ca43=a4-a3+ea23;    //Goalまでの角度
     pc.printf("ca43=%f\r\n",ca43);
 
-    tt4=ca32/360/15*t15; //Goal方向までの回転時間
+    ttd4=ca32/360/15*t15; //Goal方向までの回転時間
+    tt4=(int)ttd4;
     pc.printf("tt4=%f\r\n",tt4);
 
     motorTurn();        //Goalまでの角度まで回転
@@ -367,7 +373,8 @@ int main () {
     wait_ms(5000);
 
 
-    t4=l4/l3*t3;         //Goalまでの時間
+    td4=l4/l3*t3;         //Goalまでの時間
+    t4=(int)td4;
     pc.printf("t4=%f\r\n",t4);
 
     motorForward();   //移動t3
@@ -469,7 +476,8 @@ int main () {
     ca54=a5-a4+ea34;    //Goalまでの角度
     pc.printf("ca54=%f\r\n",ca54);
 
-    tt5=ca43/360/15*t15; //Goal方向までの回転時間
+    ttd5=ca43/360/15*t15; //Goal方向までの回転時間
+    tt5=(int)ttd5;
     pc.printf("tt5=%f\r\n",tt5);
 
     motorTurn();        //Goalまでの角度まで回転
@@ -480,10 +488,11 @@ int main () {
     wait_ms(5000);
 
 
-    t5=l5/l4*t4;         //Goalまでの時間
+    td5=l5/l4*t4;         //Goalまでの時間
+    t5=(int)td5;
     pc.printf("t5=%f\r\n",t5);
 
-    motorForward();   //移動t3
+    motorForward();   //移動t5
     pc.printf("Moving\r\n");
     wait_ms(t5);
     motorStop();
