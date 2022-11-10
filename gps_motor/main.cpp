@@ -22,7 +22,7 @@
 //#include "windows.h" //これはまず使えない
 
 //この下代入してね！
-int t15= 29180 ;
+long int t15= 29180 ;
 double gg1=135.508111;
 double gg2=34.545111;
 double leftwidth=0.5;
@@ -62,12 +62,12 @@ double a1,a2,a3,a4,a5,a6,a7,a8,a9;
 double ea12, ea23, ea34, ea45, ea56, ea67, ea78, ea89;
 double ca32,ca43,ca54,ca65,ca67,ca78,ca89;
 double td3, td4, td5, td6, td7, td8, td9;
-int t3,t4,t5,t6,t7,t8,t9;
+long int t3,t4,t5,t6,t7,t8,t9;
 double ttd3, ttd4, ttd5, ttd6, ttd7, ttd8, ttd9;
-int tt3,tt4,tt5,tt6,tt7,tt8,tt9;
+long int tt3,tt4,tt5,tt6,tt7,tt8,tt9;
 double r12,r23,r34;
 /*
-int main () {
+long int main () {
     STBY = 1;
     AIN1 = 1;
     AIN2 = 0;
@@ -90,7 +90,7 @@ int main () {
         }
     }
     
-    pc.printf("Got GPS_first\r\nWaiting for 5min\r\n");
+    pc.printf("Got GPS_first\r\nWaiting for 50s\r\n");
     wait_ms(50000);
 
     while(1){       
@@ -169,7 +169,7 @@ int main () {
         if (gps.getgps()) {   //誤差検知のためのGPS取得
             g31=gps.latitude;
             g32=gps.longitude;
-            pc.printf("Complete getting GPS_recogError\n");
+            pc.printf("Complete getting GPS_recogError\r\n");
             pc.printf("g31=%f\r\n",g31);
             pc.printf("g32=%f\r\n",g32);
             break;
@@ -246,8 +246,8 @@ int main () {
     pc.printf("ca32=%f\r\n",ca32);
 
     ttd3=ca32/360/15*t15; //Goal方向までの回転時間
-    tt3=(int)ttd3;
-    pc.printf("tt3=%f\r\n",tt3);
+    tt3=(long int)ttd3;
+    pc.printf("tt3=%d\r\n",tt3);
 
     motorTurn();        //Goalまでの角度まで回転
     pc.printf("Turning\r\n");
@@ -257,9 +257,14 @@ int main () {
     wait_ms(5000);
 
     td3=l3/l2*30000;         //Goalまでの時間
-    t3=(int)td3;
 
-    pc.printf("t3=%f\r\n",t3);
+    if(l2<0.01)
+    td3=60000;
+
+    pc.printf("td3=%f\r\n",td3);
+    t3=(long int)td3;
+
+    pc.printf("t3=%d\r\n",t3);
 
     motorForward();   //移動t3
     pc.printf("Moving\r\n");
@@ -284,11 +289,11 @@ int main () {
     //位置情報検証 地球の極半径を6356.752kmとする 1度=110.574km 1m=0.00000902956度  0.00000003634度の誤差
 
     if(g41>gg1-0.0000899322 && g41<gg1+0.0000899322 && g42>gg2-0.0000902956 && g42<gg2+0.0000902956){
-        pc.printf("Reached Goal\n");
+        pc.printf("Reached Goal\r\n");
         exit(0);
     }
     else {
-        pc.printf("Didn't reach Goal. Continue to move to Goal2\n");
+        pc.printf("Didn't reach Goal. Continue to move to Goal2\r\n");
     }  
 
     sp41=g41-g31;   //誤差検出のためのベクトル検出
@@ -362,7 +367,7 @@ int main () {
     pc.printf("ca43=%f\r\n",ca43);
 
     ttd4=ca32/360/15*t15; //Goal方向までの回転時間
-    tt4=(int)ttd4;
+    tt4=(long int)ttd4;
     pc.printf("tt4=%f\r\n",tt4);
 
     motorTurn();        //Goalまでの角度まで回転
@@ -374,7 +379,9 @@ int main () {
 
 
     td4=l4/l3*t3;         //Goalまでの時間
-    t4=(int)td4;
+    if (l3<0.01)
+        td4=60000;
+    t4=(long int)td4;
     pc.printf("t4=%f\r\n",t4);
 
     motorForward();   //移動t3
@@ -400,11 +407,11 @@ int main () {
     //位置情報検証 地球の極半径を6356.752kmとする 1度=110.574km 1m=0.00000902956度  0.00000003634度の誤差
 
     if(g51>gg1-0.0000899322 && g51<gg1+0.0000899322 && g52>gg2-0.0000902956 && g52<gg2+0.0000902956){
-        pc.printf("Complete moving to Goal2\n");
+        pc.printf("Complete moving to Goal2\r\n");
         exit(0);
     }
     else {
-        pc.printf("Didn't reach Goal2. Continue to move to Goal3. Next is the last.\n");
+        pc.printf("Didn't reach Goal2. Continue to move to Goal3. Next is the last.\r\n");
     }
         
     sp41=g51-g41;   //誤差検出のためのベクトル検出
@@ -477,8 +484,8 @@ int main () {
     pc.printf("ca54=%f\r\n",ca54);
 
     ttd5=ca43/360/15*t15; //Goal方向までの回転時間
-    tt5=(int)ttd5;
-    pc.printf("tt5=%f\r\n",tt5);
+    tt5=(long int)ttd5;
+    pc.printf("tt5=%d\r\n",tt5);
 
     motorTurn();        //Goalまでの角度まで回転
     pc.printf("Turning\r\n");
@@ -489,8 +496,10 @@ int main () {
 
 
     td5=l5/l4*t4;         //Goalまでの時間
-    t5=(int)td5;
-    pc.printf("t5=%f\r\n",t5);
+    if(l4<0.01)
+        td5=60000;
+    t5=(long int)td5;
+    pc.printf("t5=%d\r\n",t5);
 
     motorForward();   //移動t5
     pc.printf("Moving\r\n");
@@ -515,11 +524,11 @@ int main () {
     //位置情報検証 地球の極半径を6356.752kmとする 1度=110.574km 1m=0.00000902956度  0.00000003634度の誤差
 
     if(g61>gg1-0.0000899322 && g61<gg1+0.0000899322 && g62>gg2-0.0000902956 && g62<gg2+0.0000902956){
-        pc.printf("Reached Goal3\n");
+        pc.printf("Reached Goal3\r\n");
         exit(0);
     }
     else {
-        pc.printf("Didn't reach Goal3. Finished.\n");
+        pc.printf("Didn't reach Goal3. Finished.\r\n");
     }
     return 0;
 }
