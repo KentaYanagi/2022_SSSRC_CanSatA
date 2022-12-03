@@ -16,11 +16,11 @@ DigitalOut BIN1(A2);
 DigitalOut BIN2(A1);
 //INFRARED SENSOR
 AnalogIn ranging(A4);
-DigitalOut STBY(D13);
+DigitalOut STBY_moving(D13);
 //COLLECTION MECHANISM
 PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
-DigitalOut STBY(D11);
+DigitalOut STBY_collecting(D11);
 PwmOut servo(D6);
 
 //FUNCTION DECLARATION
@@ -101,9 +101,9 @@ Timer moving_timer;
 int main()
 {
     //MORTOR MOVEMENT
-    STBY = 1;
+    STBY_moving = 1;
 
-
+/*
     pc.printf("display the conditon of the flight pin\r\n");
     pc.printf("flight pin OFF\r\n");
     while(1){
@@ -112,7 +112,7 @@ int main()
             break;
         }
     }
-    wait(60);
+    //wait(60);
     pc.printf("wait for 60s from flight pin signal to heating nichrome wire\r\n");
 
     pc.printf("heating nichrome_wire start\r\n");
@@ -125,7 +125,7 @@ int main()
     pc.printf("heating nichrome_wire end\r\n");
 
     pc.printf("start exploring for about 2 min\r\n");
-
+*/
     float data;
     int count = 0;
     float prevData = 0;
@@ -140,7 +140,7 @@ int main()
 
     moving_timer.stop();
 
-    while(moving_timer.read() < 120){
+    while(moving_timer.read() < 30){
 
         moving_timer.start();
 
@@ -199,7 +199,9 @@ int main()
     //COLLECTION MECHANISM
     servo.period_ms(20);
     int a;
-    for(a=500; a<=2400; a=a+950){
+    STBY_collecting = 1;
+    for (a = 500; a <= 2400; a = a + 950)
+    {
         servo.pulsewidth_us(a);
         driveMoter(0);
         wait(3);
