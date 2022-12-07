@@ -1,177 +1,139 @@
-#include "mbed.h" //mbed Standard Library
-#include "getGPS.h" //GPS Library
-//#include "math.h" //Math Library
+#include "mbed.h"
 
-//この下にCanSatno15回の旋回時間，目標座標を記入する,フライトピンの信号から切断開始まで時間
-int t15= 29180;
-double gg1=135.508111;
-double gg2=34.545111;
-int flight_cut = 10000;
+//VARIABLES DEFINITION
+float time_turning_90_degrees = 0.43;
 
-//condition checker
-Serial pc(USBTX, USBRX); //tx, rx Flight Pin
-DigitalIn FlightPin(D12); 
-//nichrome
-DigitalOut Nichrome(D2);
-//rack and pinion
+//PIN DEFINITION
+//SERIAL COMMUNICATION
+Serial pc(SERIAL_TX, SERIAL_RX);
+//CONDITION CHECKER
+DigitalIn flightpin(D12);
+DigitalOut nichrome_wire(D2);
+//MOTOR
+PwmOut AIN1(A5);
+PwmOut AIN2(A6);
+PwmOut BIN1(A2);
+PwmOut BIN2(A1);
+//INFRARED SENSOR
+AnalogIn ranging(A4);
+DigitalOut STBY(D13);
+//COLLECTION MECHANISM
 PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
 DigitalOut STBY(D11);
-//rotate collector
 PwmOut servo(D6);
-//detect distance
-AnalogIn ranging(A4);
-//gps
-Serial pc(SERIAL_TX, SERIAL_RX); //試験用 GPS
-GPS gps(D1, D0); //GPS object
 
-void driveMoter(float);  //rack and pinion
+//FUNCTION DECLARATION
+//MOTOR MOVEMENT
+void motor_movement()
+void forward_for_x_microsec(long int);
+void backward_for_x_microsec(long int);
+void stop(void);
+void turn_right_x_degrees(float);
+void turn_right_x_degrees(float);
+float get_forward_distance(void);
+
+//MOTOR_INFRARED_SENSOR
+Timer moving_timer;
+double leftwidth = 0.5;
+double rightwidth = 0.5;
 
 
 
-int main(){
-    //フライトピン
-    pc.printf("Started CanSat\r\n");
-    pc.printf("Show flightpin_condition\r\n");
-    pc.printf("OFF\r\n");
+int main()
+{
+    //MORTOR MOVEMENT
+    STBY = 1;
 
+
+    pc.printf("display the conditon of the flight pin\r\n");
+    pc.printf("flight pin OFF\r\n");
     while(1){
-        if(FlightPin.read() == 1){
-            pc.printf("ON\r\n");
+        if(flightpin.read() == 1){
+            pc.printf("flifght pin ON\r\n");
             break;
         }
     }
-        wait(60);
+    wait(60);
+    pc.printf("wait for 60s from flight pin signal to heating nichrome wire\r\n");
 
-    pc.printf("Nichrome was heated\r\n");
-    Nichrome = 1;
-    //wait(5);
-    for(int i=1;i<5;i++){
+    pc.printf("heating nichrome_wire start\r\n");
+    nichrome_wire = 1;
+    for(int i=1;i<=5;i++){
         wait(1);
-        pc.printf("%d second\r\n",i);
+        pc.printf("heating nichrome_wire for %d second\r\n",i);
     }
-    Nichrome = 0;
-    pc.printf("end\r\n");
+    nichrome_wire = 0;
+    pc.printf("heating nichrome_wire end\r\n");
 
-/*走行，測距，GPS
-​
-​
-​
-​
-​
-*/
+    pc.printf("start exploring\r\n");
 
-//採取
-    STBY = 1;                               //モータドライバON
-    servo.period_ms(20);                    //採取機構回転装置回転
-    int a;
-    for(a=500; a<=2400; a=a+950){
-        servo.pulsewidth_us(a);             //90度回転
-        driveMoter(0);
-        wait(3);
-        driveMoter(0.2);                    //ラック降下
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        driveMoter(-0.2);                   //ラック上昇
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        }
-    STBY = 0;
 
-/*走行，測距，GPS
-​
-​
-​
-​
-​
-*/
 
-STBY = 1;                               //モータドライバON
-    servo.period_ms(20);                    //採取機構回転装置回転
-    int a;
-    for(a=500; a<=2400; a=a+950){
-        servo.pulsewidth_us(a);             //90度回転
-        driveMoter(0);
-        wait(3);
-        driveMoter(0.2);                    //ラック降下
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        driveMoter(-0.2);                   //ラック上昇
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        }
-    STBY = 0;
-
-/*走行，測距，GPS
-​
-​
-​
-​
-​
-*/
-
-STBY = 1;                               //モータドライバON
-    servo.period_ms(20);                    //採取機構回転装置回転
-    int a;
-    for(a=500; a<=2400; a=a+950){
-        servo.pulsewidth_us(a);             //90度回転
-        driveMoter(0);
-        wait(3);
-        driveMoter(0.2);                    //ラック降下
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        driveMoter(-0.2);                   //ラック上昇
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        }
-    STBY = 0;
-
-/*走行，測距，GPS
-​
-​
-​
-​
-​
-*/
+    return 0;
 }
 
-//rack and pinion
-void driveMoter(float speedA){
-    float outputA = abs(speedA);
-    if(speedA > 0){
-        pinAFin=outputA;
-        pinARin=0;
-    }else if (speedA < 0){
-        pinAFin=0;
-        pinARin=outputA;
-    }else{
-        pinAFin=0;
-        pinARin=0;
+void forward_for_x_microsec(long int x)
+{
+    stop();
+    moving_timer.reset();
+    moving_timer.start();
+    wait_ms(1000);
+    moving_timer.stop();
+    
+    while (x <= (moving_timer.read_ms() + 1000))
+    {
+        moving_timer.start();
+        AIN1 = leftwidth;
+        AIN2 = 0;
+        BIN1 = rightwidth;
+        BIN2 = 0;
+        wait_ms(1000);
+        moving_timer.stop();
+
+        if(){
+            break;
+        }
     }
+    Stop();
 }
 
-void up_down_collector(void) {
-    STBY = 1;                               //モータドライバON
-    servo.period_ms(20);                    //採取機構回転装置回転
-    int a;
-    for(a=500; a<=2400; a=a+950){
-        servo.pulsewidth_us(a);             //90度回転
-        driveMoter(0);
-        wait(3);
-        driveMoter(0.2);                    //ラック降下
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        driveMoter(-0.2);                   //ラック上昇
-        wait(1.5);
-        driveMoter(0);
-        wait(3);
-        }
-    STBY = 0;
+void backward_for_x_microsec(long int x)
+{
+    stop();
+    AIN1 = 0;
+    AIN2 = leftwidth;
+    BIN1 = 0;
+    BIN2 = rightwidth;
+    wait_ms(x);
+    Stop();
+}
+
+void turn_right_x_degrees(float x)
+{
+    Stop();
+    AIN1 = 0;
+    AIN2 = leftwidth;
+    BIN1 = rightwidth;
+    BIN2 = 0;
+    wait_ms(x);
+    Stop();
+}
+void stop()
+{
+    AIN1 = 0;
+    AIN2 = 0;
+    BIN1 = 0;
+    BIN2 = 0;
+}
+
+float get_forward_distance(void)
+{
+    float a,b,c,d,e;
+    a = -1.135;
+    c = 7.0796;
+    d = ranging.read();
+    b = pow(d,a);
+    e = c*b;
+    return e;
 }
