@@ -45,9 +45,6 @@ void motorStop(void);
 void motorTurn(void);
 double a_ra (double);
 
-//地質により変動
-double rt= 0.43; //rotate ∏/2 time
-
 double g11,g21,g31,g41,g51,g61,g71,g81,g91; //g1(着地地点） g2(スタート向き計測) g3(中間地点) g4(採取地点1) g5(中間地点) g6(採取地点2) g7(中間地点) g8(採取地点3）　g9(中間地点)
 double g12,g22,g32,g42,g52,g62,g72,g82,g92;
 double sg31,sg32,sg41,sg42,sg51,sg52,sg61,sg62,sg71,sg72,sg81,sg82;
