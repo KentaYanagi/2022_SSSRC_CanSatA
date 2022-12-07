@@ -2,6 +2,8 @@
 
 //VARIABLES DEFINITION
 float time_turning_90_degrees = 0.43;
+double leftwidth = 0.5;
+double rightwidth = 0.5;
 
 //PIN DEFINITION
 //SERIAL COMMUNICATION
@@ -16,11 +18,11 @@ PwmOut BIN1(A2);
 PwmOut BIN2(A1);
 //INFRARED SENSOR
 AnalogIn ranging(A4);
-DigitalOut STBY(D13);
+DigitalOut STBY_moving(D13);
 //COLLECTION MECHANISM
 PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
-DigitalOut STBY(D11);
+DigitalOut STBY_collecting(D11);
 PwmOut servo(D6);
 
 //FUNCTION DECLARATION
@@ -35,15 +37,13 @@ float get_forward_distance(void);
 
 //MOTOR_INFRARED_SENSOR
 Timer moving_timer;
-double leftwidth = 0.5;
-double rightwidth = 0.5;
 
 
 
 int main()
 {
     //MORTOR MOVEMENT
-    STBY = 1;
+    STBY_moving = 1;
 
 
     pc.printf("display the conditon of the flight pin\r\n");
@@ -54,8 +54,9 @@ int main()
             break;
         }
     }
-    wait(60);
+
     pc.printf("wait for 60s from flight pin signal to heating nichrome wire\r\n");
+    wait(60);
 
     pc.printf("heating nichrome_wire start\r\n");
     nichrome_wire = 1;
