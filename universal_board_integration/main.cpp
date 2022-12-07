@@ -112,8 +112,8 @@ int main()
             break;
         }
     }
-    wait(60);
     pc.printf("wait for 60s from flight pin signal to heating nichrome wire\r\n");
+    wait(60);
 
     pc.printf("heating nichrome_wire start\r\n");
     nichrome_wire = 1;
@@ -146,13 +146,14 @@ int main()
 
         while(1){
             wait(0.25);/*測距する間隔*/
+            count = 0;
             data=dis();
             if(data<=50){
                 dif = data - prevData;
                 printf("誤差%f、データ%f\r\n",dif,data);
                 if(-gosa < dif && dif < gosa){
                     printf("%d回目の誤差検知クリアしました\r\n", count+1);
-                count++; 
+                    count++; 
                 } 
                 else {
                     motorStop();
