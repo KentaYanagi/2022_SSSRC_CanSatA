@@ -3,9 +3,8 @@ PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
 DigitalOut STBY(D11);
 PwmOut servo(D6);
-​
-​
-​
+
+
 //関数設定
 void driveMoter(float speedA){
     float outputA = abs(speedA);
