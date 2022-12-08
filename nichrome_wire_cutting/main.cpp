@@ -45,5 +45,3 @@ void motorStop() {
     BIN1 = 0;
     BIN2 = 0;
 }
-
-//tmeptemptmeptmepteptmept
