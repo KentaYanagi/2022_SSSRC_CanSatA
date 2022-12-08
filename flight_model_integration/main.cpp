@@ -16,11 +16,11 @@ DigitalOut BIN1(A2);
 DigitalOut BIN2(A1);
 //INFRARED SENSOR
 AnalogIn ranging(A4);
-DigitalOut STBY(D13);
+DigitalOut STBY_moving(D13);
 //COLLECTION MECHANISM
 PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
-DigitalOut STBY(D11);
+DigitalOut STBY_collecting(D11);
 PwmOut servo(D6);
 
 //FUNCTION DECLARATION
@@ -101,7 +101,7 @@ Timer moving_timer;
 int main()
 {
     //MORTOR MOVEMENT
-    STBY = 1;
+    STBY_moving = 1;
 
 
     pc.printf("display the conditon of the flight pin\r\n");
@@ -112,8 +112,9 @@ int main()
             break;
         }
     }
-    wait(60);
+
     pc.printf("wait for 60s from flight pin signal to heating nichrome wire\r\n");
+    wait(60);
 
     pc.printf("heating nichrome_wire start\r\n");
     nichrome_wire = 1;
@@ -140,19 +141,20 @@ int main()
 
     moving_timer.stop();
 
-    while(moving_timer.read() < 120){
+    while(moving_timer.read() < 30){
 
         moving_timer.start();
 
         while(1){
             wait(0.25);/*測距する間隔*/
+            count = 0;
             data=dis();
             if(data<=50){
                 dif = data - prevData;
                 printf("誤差%f、データ%f\r\n",dif,data);
                 if(-gosa < dif && dif < gosa){
                     printf("%d回目の誤差検知クリアしました\r\n", count+1);
-                count++; 
+                    count++; 
                 } 
                 else {
                     motorStop();
@@ -199,7 +201,9 @@ int main()
     //COLLECTION MECHANISM
     servo.period_ms(20);
     int a;
-    for(a=500; a<=2400; a=a+950){
+    STBY_collecting = 1;
+    for (a = 500; a <= 2400; a = a + 950)
+    {
         servo.pulsewidth_us(a);
         driveMoter(0);
         wait(3);
