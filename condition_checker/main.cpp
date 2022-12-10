@@ -20,7 +20,6 @@ int main() {
         }
     }
     // pc.printf("モジュールの電源をONにします\r\n");
-    wait(2.0);
     mpucheck(check);
 }
 
@@ -48,12 +47,12 @@ void mpucheck(int check){
         float Z_old = 0.0;
 
     while (1){
-        if (check == 0){
             mpu.readAccelData(accel); // 加速度の値をaccel[3]に代入
             int z = accel[2] + 1110;  // z軸方向の加速度
             float Z = z * 0.000597964111328125 - 9.8;
 
-            // printf("%f\r\n",Z);
+        if (check == 0){
+            pc.printf("Z=%f Z_old=%f\r\n",Z,Z_old);
             // ローパスフィルター(現在の値 = 係数 * ひとつ前の値 ＋ (1 - 係数) * センサの値)
             // lowpassValue = lowpassValue * filterCoefficient + a * (1 - filterCoefficient);
             // ハイパスフィルター(センサの値 - ローパスフィルターの値)//
@@ -72,17 +71,18 @@ void mpucheck(int check){
             // pc.printf("speed %f diference %f\r\n",speed,difference);//速度と変位を表示
             wait(0.01);
         }
-        if(abs(Z-Z_old) >= 5.0){
+        if(abs(Z-Z_old) >= 10.0){
             if(countdown.read() >= 5){
                 check = 1;
             }
         }
+        Z_old = Z;
         if (check == 1){
             break;
             }
-        if(countdown.read() >= 60){
+        if(countdown.read() >= 25){
         break;
             }   
     }
-    heatnichrome(check);
+    printf("a\n");
 }
