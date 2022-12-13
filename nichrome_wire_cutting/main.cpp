@@ -11,6 +11,7 @@ void motorStop();
 void motorForward();
 
 int main(){
+    STBY = 1;
     printf("Start\n");
     pin = 1;
     
