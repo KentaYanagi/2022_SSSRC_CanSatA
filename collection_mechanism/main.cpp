@@ -30,11 +30,11 @@ int main(){
         driveMoter(0);
         wait(3);
         driveMoter(0.2);
-        wait(1.5);
+        wait(1.2);
         driveMoter(0);
         wait(3);
         driveMoter(-0.2);
-        wait(1.5);
+        wait(1.2);
         driveMoter(0);
         wait(3);
         }
