@@ -13,8 +13,8 @@
 long int t15 = 29180; //revolution time 15times
 double gg1 = 135.508111; //goal latitude
 double gg2 = 34.545111;  //goal longitude
-double leftwidth = 0.5;
-double rightwidth = 0.5;
+double mainmotor_pwm_leftwidth = 0.5;
+double mainmotor_pwm_rightwidth = 0.5;
 
 // only GPS
 Serial pc(SERIAL_TX, SERIAL_RX); //試験用
@@ -568,9 +568,9 @@ void Forward(long int x)
     while (x < (moving_timer.read_ms() + 1000))
     {
         moving_timer.start();
-        AIN1 = leftwidth;
+        AIN1 = mainmotor_pwm_leftwidth;
         AIN2 = 0;
-        BIN1 = rightwidth;
+        BIN1 = mainmotor_pwm_rightwidth;
         BIN2 = 0;
         wait_ms(100);
         moving_timer.stop();
@@ -586,9 +586,9 @@ void Backward(long int x)
 {
     Stop();
     AIN1 = 0;
-    AIN2 = leftwidth;
+    AIN2 = mainmotor_pwm_leftwidth;
     BIN1 = 0;
-    BIN2 = rightwidth;
+    BIN2 = mainmotor_pwm_rightwidth;
     wait_ms(x);
     Stop();
 }
@@ -596,10 +596,10 @@ void Backward(long int x)
 void Turn(long int x)
 {
     Stop();
-    AIN1 = leftwidth;
+    AIN1 = mainmotor_pwm_leftwidth;
     AIN2 = 0;
     BIN1 = 0;
-    BIN2 = rightwidth;
+    BIN2 = mainmotor_pwm_rightwidth;
     wait_ms(x);
     Stop();
 }

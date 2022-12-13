@@ -127,7 +127,7 @@ int main()
     pc.printf("start exploring for about 2 min\r\n");
 */
     float data;
-    int count = 0;
+    int count;
     float prevData = 0;
     float dif = 0;
     float gosa = 10; //許容する誤差の値
