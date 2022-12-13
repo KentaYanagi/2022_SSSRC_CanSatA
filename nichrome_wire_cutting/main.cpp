@@ -34,10 +34,10 @@ int main(){
 
 void motorForward() {
     motorStop();
-    AIN1 = 1;
-    AIN2 = 0;
-    BIN1 = 1;
-    BIN2 = 0;
+    AIN1 = 0;
+    AIN2 = 1;
+    BIN1 = 0;
+    BIN2 = 1;
 }
 
 void motorStop() {
