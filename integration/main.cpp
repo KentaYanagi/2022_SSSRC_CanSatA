@@ -85,10 +85,10 @@ void forward_for_x_microsec(long int x)
     while (x <= (moving_timer.read_ms() + 1000))
     {
         moving_timer.start();
-        AIN1 = leftwidth;
-        AIN2 = 0;
-        BIN1 = rightwidth;
-        BIN2 = 0;
+        AIN1 = 0;
+        AIN2 = leftwidth;
+        BIN1 = 0;
+        BIN2 = rightwidth;
         wait_ms(1000);
         moving_timer.stop();
 
@@ -102,10 +102,10 @@ void forward_for_x_microsec(long int x)
 void backward_for_x_microsec(long int x)
 {
     stop();
-    AIN1 = 0;
-    AIN2 = leftwidth;
-    BIN1 = 0;
-    BIN2 = rightwidth;
+    AIN1 = leftwidth;
+    AIN2 = 0;
+    BIN1 = rightwidth;
+    BIN2 = 0;
     wait_ms(x);
     Stop();
 }
@@ -113,10 +113,10 @@ void backward_for_x_microsec(long int x)
 void turn_right_x_degrees(float x)
 {
     Stop();
-    AIN1 = 0;
-    AIN2 = leftwidth;
-    BIN1 = rightwidth;
-    BIN2 = 0;
+    AIN1 = leftwidth;
+    AIN2 = 0;
+    BIN1 = 0;
+    BIN2 = rightwidth;
     wait_ms(x);
     Stop();
 }
