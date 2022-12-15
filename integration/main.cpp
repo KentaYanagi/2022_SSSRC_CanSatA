@@ -50,10 +50,12 @@ float get_forward_distance_to_obstacle(void);
 // COLLECTION MECHANISM
 void rack_pinion_movement(char direction[10], int move_time);
 void collection_mechanism(void);
+// CONDITION CHECKER
+void heatnichrome_wire(int nichrome_wire_triger);
+void mpucheck();
 
 // MOTOR_INFRARED_SENSOR
 Timer moving_timer;
-
 // CONDITION CHECKER
 Timer count_down_for_nichrome_wire;
 
@@ -61,6 +63,7 @@ int main()
 {
     // MORTOR MOVEMENT
     STBY_moving = 1;
+
 
     pc.printf("display the conditon of the flight pin\r\n");
     pc.printf("flight pin OFF\r\n");
@@ -73,6 +76,9 @@ int main()
         }
     }
 
+    mpucheck();
+
+/*
     pc.printf("wait for 60s from flight pin signal to heating nichrome_wire wire\r\n");
     wait(60);
 
@@ -85,6 +91,8 @@ int main()
     }
     nichrome_wire = 0;
     pc.printf("heating nichrome_wire end\r\n");
+
+*/
     pc.printf("start exploring\r\n");
 
     for (int i = 1; i <= 3; i++)
@@ -277,7 +285,7 @@ void rack_pinion_movement(char direction[10], int move_time){
     pinARin=0;
 }
 
-void collection_mecanism(void)
+void collection_mechanism(void)
 {
     servo.period_ms(20);
     STBY_collecting = 1;
@@ -289,4 +297,66 @@ void collection_mecanism(void)
     rack_pinion_movement("stop", 3000);
     rack_pinion_movement("up", 1200);
     rack_pinion_movement("stop", 3000);
+}
+
+// CONDITION CHECKER
+void mpucheck (void) {
+
+    count_down_for_nichrome_wire.start();
+
+    int nichrome_wire_triger = 0;
+    float filterCoefficient = 0.9; // ローパスフィルターの係数(これは環境によって要調整。1に近づけるほど平滑化の度合いが大きくなる。
+    float lowpassValue = 0;
+    float highpassValue = 0;
+    float speed = 0;//加速度時から算出した速度
+    float oldSpeed = 0;//ひとつ前の速度
+    float oldAccel = 0;//ひとつ前の加速度
+    float difference=0;//変位
+    float timespan=0.01;//時間差
+    int accel[3];//accelを3つの配列で定義。
+    float Z_old = 0.0;
+
+    while (1){
+            accelerometer_mpu6050.readAccelData(accel); // 加速度の値をaccel[3]に代入
+            int z = accel[2] + 1110;  // z軸方向の加速度
+            float Z = z * 0.000597964111328125 - 9.8;
+
+        if (nichrome_wire_triger == 0){
+            pc.printf("Z=%f Z_old=%f\r\n",Z,Z_old);
+  
+            wait(0.01);
+        }
+        if(abs(Z-Z_old) >= 10.0){
+            if(count_down_for_nichrome_wire.read() >= 15){
+                nichrome_wire_triger = 1;
+            }
+        }
+        Z_old = Z;
+        if (nichrome_wire_triger == 1){
+            break;
+            }
+        if(count_down_for_nichrome_wire.read() >= 40){
+        break;
+            }   
+    }
+    heatnichrome_wire(nichrome_wire_triger);
+}
+
+void heatnichrome_wire(int nichrome_wire_triger){
+    if(nichrome_wire_triger == 1){
+        printf("Start\n");
+        nichrome_wire = 1;
+    
+    for(int i=0;i<5;i++){
+        wait(1);
+        printf("%d second\n", i+1);    
+    }
+
+    printf("%s\r\n", "走行開始");
+    cansat_move(5000, "forward");
+    
+    mainmotor_driver_pin("stop");
+    nichrome_wire = 0;
+    printf("End\n");
+    }
 }
