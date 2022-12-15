@@ -27,7 +27,7 @@ int main(){
     int a;
     for(a=500; a<=2400; a=a+950){
         servo.pulsewidth_us(a);
-        for (int i = 0; i < 3; i++){
+        for (int i = 0; i < 5; i++){
             driveMoter(0);
             wait(3);
             driveMoter(0.2);
