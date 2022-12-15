@@ -4,14 +4,14 @@
 Serial pc(SERIAL_TX, SERIAL_RX);
 MPU6050 mpu(D4,D5);//(SDA,SCL)のピン配置
 DigitalOut STBY(D13);
-DigitalIn FlightPin(D12);
-DigitalOut Nichrome(D2);
+DigitalIn flightpin(D12);
+DigitalOut nichrome_wire(D2);
 PwmOut AIN1(A5);
 PwmOut AIN2(A6);
 PwmOut BIN1(A2);
 PwmOut BIN2(A1);
 Timer countdown;
-void heatnichrome(int);
+void heatnichrome_wire(int);
 void mpucheck(int);
 void motorStop();
 void motorForward();
@@ -21,7 +21,7 @@ int main() {
     // pc.printf("フライトピンの状態を表示します\r\n");
     // pc.printf("OFF\r\n");
     while (1){
-        if (FlightPin.read() == 1){
+        if (flightpin.read() == 1){
             // pc.printf("ON\r\n");
             break;
         }
@@ -30,11 +30,11 @@ int main() {
     mpucheck(check);
 }
 
-void heatnichrome(int check){
+void heatnichrome_wire(int check){
     if(check == 0){
         STBY = 1;
         printf("Start\n");
-        Nichrome = 1;
+        nichrome_wire = 1;
     
     for(int i=0;i<5;i++){
         wait(1);
@@ -49,7 +49,7 @@ void heatnichrome(int check){
     }
     
     motorStop();
-    Nichrome = 0;
+    nichrome_wire = 0;
     printf("End\n");
     }
 }
@@ -90,7 +90,7 @@ void mpucheck(int check){
         break;
             }   
     }
-    heatnichrome(check);
+    heatnichrome_wire(check);
 }
 
 void motorForward() {

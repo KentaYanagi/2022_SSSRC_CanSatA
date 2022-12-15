@@ -1,5 +1,6 @@
 #include "mbed.h"
 #include "string.h"
+#include "MPU6050.h"
 
 // VARIABLES DEFINITION
 int time_turning_90_degrees = 430000;
@@ -36,6 +37,8 @@ PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
 DigitalOut STBY_collecting(D11);
 PwmOut servo(D6);
+// MPU6050
+MPU6050 accelerometer_mpu6050(D4, D5);// Position PIN (SDA, SCL)
 
 // FUNCTION DECLARATION
 // MOTOR MOVEMENT
@@ -50,6 +53,9 @@ void collection_mechanism(void);
 
 // MOTOR_INFRARED_SENSOR
 Timer moving_timer;
+
+// CONDITION CHECKER
+Timer count_down_for_nichrome_wire;
 
 int main()
 {
@@ -67,7 +73,7 @@ int main()
         }
     }
 
-    pc.printf("wait for 60s from flight pin signal to heating nichrome wire\r\n");
+    pc.printf("wait for 60s from flight pin signal to heating nichrome_wire wire\r\n");
     wait(60);
 
     pc.printf("heating nichrome_wire start\r\n");

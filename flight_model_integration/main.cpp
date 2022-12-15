@@ -8,7 +8,7 @@ float time_turning_90_degrees = 0.43;
 Serial pc(SERIAL_TX, SERIAL_RX);
 //CONDITION CHECKER
 DigitalIn flightpin(D12);
-DigitalOut nichrome_wire(D2);
+DigitalOut nichrome_wire_wire(D2);
 //MOTOR
 DigitalOut AIN1(A5);
 DigitalOut AIN2(A6);
@@ -113,17 +113,17 @@ int main()
         }
     }
 
-    pc.printf("wait for 60s from flight pin signal to heating nichrome wire\r\n");
+    pc.printf("wait for 60s from flight pin signal to heating nichrome_wire wire\r\n");
     wait(60);
 
-    pc.printf("heating nichrome_wire start\r\n");
-    nichrome_wire = 1;
+    pc.printf("heating nichrome_wire_wire start\r\n");
+    nichrome_wire_wire = 1;
     for(int i=1;i<=5;i++){
         wait(1);
-        pc.printf("heating nichrome_wire for %d second\r\n",i);
+        pc.printf("heating nichrome_wire_wire for %d second\r\n",i);
     }
-    nichrome_wire = 0;
-    pc.printf("heating nichrome_wire end\r\n");
+    nichrome_wire_wire = 0;
+    pc.printf("heating nichrome_wire_wire end\r\n");
 
     pc.printf("start exploring for about 2 min\r\n");
 

@@ -10,9 +10,9 @@ int flight_cut = 10000;
 
 //condition checker
 Serial pc(USBTX, USBRX); //tx, rx Flight Pin
-DigitalIn FlightPin(D12); 
-//nichrome
-DigitalOut Nichrome(D2);
+DigitalIn flightpin(D12); 
+//nichrome_wire
+DigitalOut nichrome_wire(D2);
 //rack and pinion
 PwmOut pinAFin(D9);
 PwmOut pinARin(D10);
@@ -36,21 +36,21 @@ int main(){
     pc.printf("OFF\r\n");
 
     while(1){
-        if(FlightPin.read() == 1){
+        if(flightpin.read() == 1){
             pc.printf("ON\r\n");
             break;
         }
     }
         wait(60);
 
-    pc.printf("Nichrome was heated\r\n");
-    Nichrome = 1;
+    pc.printf("nichrome_wire was heated\r\n");
+    nichrome_wire = 1;
     //wait(5);
     for(int i=1;i<5;i++){
         wait(1);
         pc.printf("%d second\r\n",i);
     }
-    Nichrome = 0;
+    nichrome_wire = 0;
     pc.printf("end\r\n");
 
 /*走行，測距，GPS

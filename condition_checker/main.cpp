@@ -2,11 +2,11 @@
 #include "MPU6050.h"
 
 Serial pc(SERIAL_TX, SERIAL_RX);
-MPU6050 mpu(D4,D5);//(SDA,SCL)のピン配置
-DigitalIn FlightPin(D12);
-DigitalOut Nichrome(D2);
-Timer countdown;
-void heatnichrome(int);
+MPU6050 accelerometer_mpu6050(D4,D5);//(SDA,SCL)のピン配置
+DigitalIn flightpin(D12);
+DigitalOut nichrome_wire(D2);
+Timer count_down_for_nichrome_wire;
+void heatnichrome_wire(int);
 void mpucheck(int);
 
 int main() {
@@ -14,7 +14,7 @@ int main() {
     // pc.printf("フライトピンの状態を表示します\r\n");
     // pc.printf("OFF\r\n");
     while (1){
-        if (FlightPin.read() == 1){
+        if (flightpin.read() == 1){
             // pc.printf("ON\r\n");
             break;
         }
@@ -23,33 +23,33 @@ int main() {
     mpucheck(check);
 }
 
-void heatnichrome(int check){
+void heatnichrome_wire(int check){
     if(check == 0){
     // pc.printf("start/r/n");
-    Nichrome = 1;
+    nichrome_wire = 1;
     wait(5.0);
-    Nichrome = 0;
+    nichrome_wire = 0;
     // pc.printf("end\r\n");
     }
 }
 
 void mpucheck(int check){
-        countdown.start();
-        float filterCoefficient = 0.9; // ローパスフィルターの係数(これは環境によって要調整。1に近づけるほど平滑化の度合いが大きくなる。
-        float lowpassValue = 0;
-        float highpassValue = 0;
-        float speed = 0;//加速度時から算出した速度
-        float oldSpeed = 0;//ひとつ前の速度
-        float oldAccel = 0;//ひとつ前の加速度
-        float difference=0;//変位
-        float timespan=0.01;//時間差
-        int accel[3];//accelを3つの配列で定義。
-        float Z_old = 0.0;
+    count_down_for_nichrome_wire.start();
+    float filterCoefficient = 0.9; // ローパスフィルターの係数(これは環境によって要調整。1に近づけるほど平滑化の度合いが大きくなる。
+    float lowpassValue = 0;
+    float highpassValue = 0;
+    float speed = 0;//加速度時から算出した速度
+    float oldSpeed = 0;//ひとつ前の速度
+    float oldAccel = 0;//ひとつ前の加速度
+    float difference=0;//変位
+    float timespan=0.01;//時間差
+    int accel[3];//accelを3つの配列で定義。
+    float Z_old = 0.0;
 
     while (1){
-            mpu.readAccelData(accel); // 加速度の値をaccel[3]に代入
-            int z = accel[2] + 1110;  // z軸方向の加速度
-            float Z = z * 0.000597964111328125 - 9.8;
+        accelerometer_mpu6050.readAccelData(accel); // 加速度の値をaccel[3]に代入
+        int z = accel[2] + 1110;  // z軸方向の加速度
+        float Z = z * 0.000597964111328125 - 9.8;
 
         if (check == 0){
             pc.printf("Z=%f Z_old=%f\r\n",Z,Z_old);
@@ -72,7 +72,7 @@ void mpucheck(int check){
             wait(0.01);
         }
         if(abs(Z-Z_old) >= 10.0){
-            if(countdown.read() >= 5){
+            if(count_down_for_nichrome_wire.read() >= 5){
                 check = 1;
             }
         }
@@ -80,7 +80,7 @@ void mpucheck(int check){
         if (check == 1){
             break;
             }
-        if(countdown.read() >= 25){
+        if(count_down_for_nichrome_wire.read() >= 25){
         break;
             }   
     }
