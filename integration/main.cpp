@@ -103,7 +103,8 @@ int main()
         cansat_turn(45, "right");
         mainmotor_driver_pin("stop");
     }
-
+    
+    servo.pulsewidth_us(500);
     pc.printf("finished mission\r\n");
     return 0;
 }
