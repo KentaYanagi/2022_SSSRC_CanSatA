@@ -161,18 +161,18 @@ void cansat_move(long int move_time, char direction[10])
                 mainmotor_driver_pin("backward");
                 wait(1);
                 mainmotor_driver_pin("stop");
-                wait(0.5);
+                wait(1.5);
                 printf("右旋回\r\n");
                 cansat_turn(90.0, "right");
                 mainmotor_driver_pin("stop");
-                wait(0.5);
+                wait(1.5);
                 printf("前進\r\n");
                 mainmotor_driver_pin("forward");
-                wait(1.5);
+                wait(1);
                 mainmotor_driver_pin("stop");
-                wait(0.5);
+                wait(1.5);
                 printf("左旋回\r\n");
-                cansat_turn(90, "left");
+                cansat_turn(90.0, "left");
                 evasive_action_count++;
             }
 
