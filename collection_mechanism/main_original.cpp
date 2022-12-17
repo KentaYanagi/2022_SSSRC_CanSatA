@@ -19,8 +19,7 @@ void driveMoter(float speedA){
         pinARin=0;
     }
 }
-​
-​
+
 int main(){
     STBY = 1;
     servo.period_ms(20);

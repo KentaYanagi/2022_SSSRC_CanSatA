@@ -99,7 +99,7 @@ int main()
         cansat_move(10000, "forward");
         pc.printf("end exploring\r\n");
         pc.printf("start collecting\r\n");
-        collection_mecanism();
+        collection_mechanism();
         pc.printf("end collecting\r\n");
         pc.printf("start exploring\r\n");
         cansat_turn(45, "right");
@@ -123,7 +123,7 @@ void cansat_move(long int move_time, char direction[10])
         while (move_time <= (moving_timer.read_ms() + 1000*evasive_action_count))
         {
             while(1){
-                count =0;
+                int count =0;
                 forward_distance_to_obstacle = get_forward_distance_to_obstacle();
                 if (forward_distance_to_obstacle <= 50)
                 {
@@ -161,7 +161,7 @@ void cansat_move(long int move_time, char direction[10])
                 printf("後進\r\n");
                 cansat_move(1000, "backward");
                 printf("右旋回\r\n");
-                cansat_turn(90, "right");
+                cansat_turn(90.0, "right");
                 printf("前進\r\n");
                 cansat_move(10000, "forward");
                 printf("左旋回\r\n");
@@ -200,7 +200,7 @@ void cansat_move(long int move_time, char direction[10])
     
 }
 
-void turn_x_degrees(float degree, char direction[10])
+void cansat_turn (float degree, char direction[10])
 {
     int turn_time;
     turn_time = (int)(time_turning_90_degrees * degree / 90);
