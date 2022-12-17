@@ -159,11 +159,13 @@ void cansat_move(long int move_time, char direction[10])
                 mainmotor_driver_pin("stop");
                 printf("回避します。衝突までの距離は%fcm\r\n", forward_distance_to_obstacle);
                 printf("後進\r\n");
-                cansat_move(1000, "backward");
+                mainmotor_driver_pin("backward");
+                wait(1);
                 printf("右旋回\r\n");
                 cansat_turn(90.0, "right");
                 printf("前進\r\n");
-                cansat_move(10000, "forward");
+                mainmotor_driver_pin("forward");
+                wait(1);
                 printf("左旋回\r\n");
                 cansat_turn(90, "left");
                 evasive_action_count++;
