@@ -202,17 +202,14 @@ void cansat_move(long int move_time, char direction[10])
 
 void cansat_turn (float degree, char direction[10])
 {
-    printf("入った\r\n");
     int turn_time;
     turn_time = (int)(time_turning_90_degrees * degree / 90);
     if (strcmp(direction, "left") == 0)
     {
-        printf("left\r\n");
         mainmotor_driver_pin("left");
     }
     else if (strcmp(direction, "right") == 0)
     {
-        printf("right\r\n");
         mainmotor_driver_pin("right");
     }
     wait_us(turn_time);
