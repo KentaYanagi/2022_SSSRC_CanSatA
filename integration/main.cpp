@@ -9,7 +9,6 @@ double mainmotor_pwm_rightwidth = 1.0;
 double rack_pinion_pwm_width = 0.2;
 
 float forward_distance_to_obstacle = 0;
-int count;
 float prevData = 0;
 float dif = 0;
 float gosa = 10;  // 許容する誤差の値
@@ -97,6 +96,7 @@ int main()
     for (int i = 1; i <= 3; i++)
     {
         cansat_move(10000, "forward");
+        mainmotor_driver_pin("stop")
         pc.printf("end exploring\r\n");
         pc.printf("start collecting\r\n");
         collection_mechanism();
@@ -119,11 +119,11 @@ void cansat_move(long int move_time, char direction[10])
         wait_ms(1000);
         moving_timer.stop();
         int evasive_action_count = 1;
+        int count = 0;
 
-        while (move_time <= (moving_timer.read_ms() + 1000*evasive_action_count))
+        while (move_time >= (moving_timer.read_ms() + 1000*evasive_action_count))
         {
             while(1){
-                int count =0;
                 forward_distance_to_obstacle = get_forward_distance_to_obstacle();
                 if (forward_distance_to_obstacle <= 50)
                 {
