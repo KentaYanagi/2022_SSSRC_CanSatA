@@ -240,14 +240,14 @@ void mainmotor_driver_pin(char direction[10])
         BIN1 = 0;
         BIN2 = 0;
     }
-    else if (strcmp(direction, "right") == 0)
+    else if (strcmp(direction, "left") == 0)
     {
         AIN1 = 0;
         AIN2 = mainmotor_pwm_leftwidth;
         BIN1 = mainmotor_pwm_rightwidth;
         BIN2 = 0;
     }
-    else if (strcmp(direction, "left") == 0)
+    else if (strcmp(direction, "right") == 0)
     {
         AIN1 = mainmotor_pwm_leftwidth;
         AIN2 = 0;
