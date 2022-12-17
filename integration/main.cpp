@@ -9,7 +9,7 @@ double mainmotor_pwm_rightwidth = 1.0;
 double rack_pinion_pwm_width = 0.2;
 
 float forward_distance_to_obstacle = 0;
-int count;
+int count = 0;
 float prevData = 0;
 float dif = 0;
 float gosa = 10;  // 許容する誤差の値
@@ -25,8 +25,8 @@ Serial pc(SERIAL_TX, SERIAL_RX);
 DigitalIn flightpin(D12);
 DigitalOut nichrome_wire(D2);
 // MOTOR
-PwmOut AIN1(A5);
-PwmOut AIN2(A6);
+PwmOut AIN1(A6);
+PwmOut AIN2(A5);
 PwmOut BIN1(A2);
 PwmOut BIN2(A1);
 // INFRARED SENSOR
@@ -71,7 +71,7 @@ int main()
     {
         if (flightpin.read() == 1)
         {
-            pc.printf("flifght pin ON\r\n");
+            pc.printf("flight pin ON\r\n");
             break;
         }
     }
@@ -80,7 +80,6 @@ int main()
 /*
     pc.printf("wait for 60s from flight pin signal to heating nichrome_wire wire\r\n");
     wait(60);
-
     pc.printf("heating nichrome_wire start\r\n");
     nichrome_wire = 1;
     for (int i = 1; i <= 5; i++)
@@ -90,23 +89,23 @@ int main()
     }
     nichrome_wire = 0;
     pc.printf("heating nichrome_wire end\r\n");
-
 */
     pc.printf("start exploring\r\n");
 
     for (int i = 1; i <= 3; i++)
     {
         cansat_move(10000, "forward");
+        mainmotor_driver_pin("stop");
         pc.printf("end exploring\r\n");
         pc.printf("start collecting\r\n");
         collection_mechanism();
         pc.printf("end collecting\r\n");
         pc.printf("start exploring\r\n");
         cansat_turn(45, "right");
+        mainmotor_driver_pin("stop");
     }
-    
-    pc.printf("finished mission\r\n");
 
+    pc.printf("finished mission\r\n");
     return 0;
 }
 
@@ -119,11 +118,12 @@ void cansat_move(long int move_time, char direction[10])
         wait_ms(1000);
         moving_timer.stop();
         int evasive_action_count = 1;
+        int count =0;
 
-        while (move_time <= (moving_timer.read_ms() + 1000*evasive_action_count))
-        {
+        while (move_time >= (moving_timer.read_ms() + 1000*evasive_action_count)){   
+            printf("s\r\n");
             while(1){
-                int count =0;
+                printf("r\r\n");
                 forward_distance_to_obstacle = get_forward_distance_to_obstacle();
                 if (forward_distance_to_obstacle <= 50)
                 {
@@ -197,21 +197,23 @@ void cansat_move(long int move_time, char direction[10])
             wait_ms(10);
             moving_timer.stop();
         }
-    }
-
-    
+    }    
 }
+
 
 void cansat_turn (float degree, char direction[10])
 {
+    printf("入った\r\n");
     int turn_time;
     turn_time = (int)(time_turning_90_degrees * degree / 90);
     if (strcmp(direction, "left") == 0)
     {
+        printf("left\r\n");
         mainmotor_driver_pin("left");
     }
     else if (strcmp(direction, "right") == 0)
     {
+        printf("right\r\n");
         mainmotor_driver_pin("right");
     }
     wait_us(turn_time);
@@ -270,6 +272,7 @@ float get_forward_distance_to_obstacle(void)
 
 // COLLECTION MECANISM
 void rack_pinion_movement(char direction[10], int move_time){
+    printf("f\r\n");
     if(strcmp(direction, "down") == 0){
         pinAFin=rack_pinion_pwm_width;
         pinARin=0;
@@ -302,7 +305,6 @@ void collection_mechanism(void)
 
 // CONDITION CHECKER
 void mpucheck (void) {
-
     count_down_for_nichrome_wire.start();
     wait(5.0);
     int nichrome_wire_triger = 0;
@@ -337,7 +339,8 @@ void mpucheck (void) {
             break;
             }
         if(count_down_for_nichrome_wire.read() >= 40){
-        break;
+            nichrome_wire_triger = 1;
+            break;
             }   
     }
     heatnichrome_wire(nichrome_wire_triger);
