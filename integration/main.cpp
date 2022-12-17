@@ -292,13 +292,16 @@ void collection_mechanism(void)
     servo.period_ms(20);
     STBY_collecting = 1;
 
-    servo.pulsewidth_us(servomotor_pulsewidth);
-    servomotor_pulsewidth += 950;
-    rack_pinion_movement("stop", 3000);
-    rack_pinion_movement("down", 1200);
-    rack_pinion_movement("stop", 3000);
-    rack_pinion_movement("up", 1200);
-    rack_pinion_movement("stop", 3000);
+    for(int i = 0; i<3; i++)
+    {
+        servo.pulsewidth_us(servomotor_pulsewidth);
+        servomotor_pulsewidth += 210;
+        rack_pinion_movement("stop", 3000);
+        rack_pinion_movement("down", 1200);
+        rack_pinion_movement("stop", 3000);
+        rack_pinion_movement("up", 1200);
+        rack_pinion_movement("stop", 3000);
+    }
 }
 
 // CONDITION CHECKER
