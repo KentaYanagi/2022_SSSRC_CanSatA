@@ -343,7 +343,7 @@ void mpucheck (void) {
         if (nichrome_wire_triger == 1){
             break;
             }
-        if(count_down_for_nichrome_wire.read() >= 40){
+        if(count_down_for_nichrome_wire.read() >= 30){
             nichrome_wire_triger = 1;
             break;
             }   
