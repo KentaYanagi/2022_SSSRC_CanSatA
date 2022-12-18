@@ -311,7 +311,7 @@ void collection_mechanism(void)
 // CONDITION CHECKER
 void mpucheck (void) {
     count_down_for_nichrome_wire.start();
-    wait(5.0);
+    wait(3.0);
     int nichrome_wire_triger = 0;
     float filterCoefficient = 0.9; // ローパスフィルターの係数(これは環境によって要調整。1に近づけるほど平滑化の度合いが大きくなる。
     float lowpassValue = 0;
@@ -335,7 +335,7 @@ void mpucheck (void) {
             wait(0.01);
         }
         if(abs(Z-Z_old) >= 10.0){
-            if(count_down_for_nichrome_wire.read() >= 20){
+            if(count_down_for_nichrome_wire.read() >= 3){
                 nichrome_wire_triger = 1;
             }
         }
